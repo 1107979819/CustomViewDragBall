@@ -15,14 +15,15 @@ import android.view.View;
  * 版本：
  * 改进：
  */
-public class DragBall extends View {
+public class  DragBall extends View {
 
 
        int width = 0;
       int height= 0;
+
     float loc = 0;
-    float starty;
-    float stopy;
+    float startX;
+    float stopX;
     private float lastLoc;
 
     public DragBall(Context context) {
@@ -58,11 +59,32 @@ public class DragBall extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                starty = event.getY();
+                startX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                stopy = event.getY();
-               loc =lastLoc+ stopy-starty;//第二次的移动实在上一次的基础上，所以要加上上一次的位置
+                stopX = event.getX();
+
+
+                //无边界版
+//               loc =lastLoc+ stopX - startX;//第二次的移动实在上一次的基础上，所以要加上上一次的位置
+                //end无边界版
+
+                //有边界帮
+                float tmp = lastLoc+ stopX - startX;
+                if(tmp<0)
+                {
+                    loc = 0;
+                }else if(tmp>width)
+                {
+                    loc=width;
+                }else
+                {
+                    loc = tmp;
+                }
+
+                //end有边界帮
+
+
                 invalidate();
 
                 break;
@@ -77,7 +99,7 @@ public class DragBall extends View {
 
     public void dateDraw(Canvas canvas)
     {
-        canvas.translate(0,loc);
+        canvas.translate(loc,0);
         //这里画图
         Paint paint  = new Paint();
         // 画笔颜色为红色
@@ -87,8 +109,9 @@ public class DragBall extends View {
         paint.setStrokeWidth(5);
 
 
-        canvas.drawCircle(width/2,height/2,50,paint);
+//        canvas.drawCircle(width/2,height/2,50,paint);
 
+        canvas.drawCircle(0,height/2,50,paint);
     }
 
 }
